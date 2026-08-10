@@ -2,84 +2,84 @@
 <html lang="zh-Hant"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>這只是一個簡單的闖關遊戲</title>
+<title>文字闖關</title>
 <style>
-  :root{--ink:#2f2b26;--ink-soft:#6b6459;--paper:#f3ead8;--red:#c0512f;--green:#3f7a4d}
+  /* Chrome 離線恐龍遊戲的配色：白底、單一深灰、無圓角、無陰影 */
+  :root{--ink:#535353;--ink-soft:#a3a3a3;--line:#d8d8d8;--paper:#ffffff;--red:#8f3d2b;--green:#4a7a4a}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
   body{
-    font-family:"Xingkai TC","STXingkai","Yuanti TC","STKaiti","KaiTi","DFKai-SB","PingFang TC","Microsoft JhengHei",sans-serif;
-    color:var(--ink);background-color:var(--paper);
-    background-image:radial-gradient(rgba(120,100,70,.10) 1px,transparent 1px),radial-gradient(rgba(120,100,70,.07) 1px,transparent 1px);
-    background-size:7px 7px,13px 13px;background-position:0 0,4px 6px;
-    padding:18px;
+    font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,"Courier New",
+      "Noto Sans Mono CJK TC","PingFang TC","Microsoft JhengHei",monospace;
+    color:var(--ink);background:var(--paper);
+    padding:18px;-webkit-font-smoothing:antialiased;
   }
   #wrap{display:flex;gap:20px;align-items:flex-start;max-width:1360px;margin:0 auto}
   #panel{width:330px;flex:0 0 330px;position:sticky;top:18px;max-height:calc(100vh - 36px);overflow:auto;padding-right:4px}
   #stage{flex:1;min-width:0}
   body.baked #panel{display:none}
   body.baked #wrap{max-width:900px}
-  h1{font-size:30px;margin:0 0 2px;letter-spacing:.06em}
-  h1 small{display:block;font-size:11px;letter-spacing:.32em;color:var(--ink-soft);margin-top:5px;font-family:ui-monospace,monospace}
-  .sheet{background:rgba(255,255,255,.45);border:2.5px solid var(--ink);
-    border-radius:255px 15px 225px 15px/15px 225px 15px 255px;padding:18px 20px;margin-top:14px;
-    box-shadow:3px 4px 0 rgba(47,43,38,.16)}
-  .card{background:rgba(255,255,255,.4);border:2px solid var(--ink);border-radius:10px 3px 12px 3px/3px 12px 3px 10px;
-    padding:12px 14px;margin-bottom:12px}
-  .card h3{margin:0 0 10px;font-size:15px;letter-spacing:.14em;color:var(--ink-soft);
-    border-bottom:2px dashed rgba(47,43,38,.28);padding-bottom:6px}
-  label{display:block;font-size:14px;margin:12px 0 5px;letter-spacing:.05em}
+  h1{font-size:22px;margin:0 0 2px;letter-spacing:.18em}
+  h1 small{display:block;font-size:10px;letter-spacing:.4em;color:var(--ink-soft);margin-top:6px}
+  .sheet{background:var(--paper);border:2px solid var(--ink);padding:18px 20px;margin-top:14px}
+  .card{border:2px solid var(--line);padding:12px 14px;margin-bottom:12px}
+  .card h3{margin:0 0 10px;font-size:12px;letter-spacing:.24em;color:var(--ink);
+    border-bottom:2px solid var(--line);padding-bottom:7px}
+  label{display:block;font-size:12.5px;margin:12px 0 5px;letter-spacing:.06em}
   label:first-child{margin-top:0}
-  .hint{color:var(--ink-soft);font-size:12px}
-  textarea,input[type=text]{width:100%;font-family:inherit;font-size:16px;color:var(--ink);background:transparent;
-    border:none;border-bottom:2px dashed rgba(47,43,38,.45);padding:6px 3px;outline:none;resize:vertical;line-height:1.6}
-  textarea:focus,input[type=text]:focus{border-bottom-color:var(--red)}
-  .ctrl{margin:9px 0 3px}
-  .ctrl .top{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;letter-spacing:.04em}
-  .ctrl .val{font-family:ui-monospace,monospace;font-size:12.5px;color:var(--red)}
-  .ctrl .note{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin-top:1px}
-  input[type=range]{width:100%;margin:3px 0 0;accent-color:#c0512f;height:20px}
-  .chk{display:flex;align-items:center;gap:8px;font-size:14px;margin:9px 0}
-  .chk input{width:17px;height:17px;accent-color:#c0512f}
-  button{font-family:inherit;font-size:16px;color:var(--ink);cursor:pointer;background:rgba(255,255,255,.6);
-    border:2.5px solid var(--ink);border-radius:255px 15px 225px 15px/15px 225px 15px 255px;padding:8px 20px;
-    letter-spacing:.08em;box-shadow:2px 3px 0 rgba(47,43,38,.2);transition:transform .08s,box-shadow .08s}
-  button:hover{transform:translate(1px,1px);box-shadow:1px 1.5px 0 rgba(47,43,38,.2)}
-  button:active{transform:translate(2px,3px);box-shadow:none}
-  button.ghost{border-style:dashed;background:transparent;font-size:14px;padding:6px 14px}
-  button.primary{background:rgba(192,81,47,.14);border-color:var(--red);color:var(--red)}
+  .hint{color:var(--ink-soft);font-size:11px}
+  textarea,input[type=text]{width:100%;font-family:inherit;font-size:14px;color:var(--ink);background:var(--paper);
+    border:2px solid var(--line);padding:7px 8px;outline:none;resize:vertical;line-height:1.6;border-radius:0}
+  textarea:focus,input[type=text]:focus{border-color:var(--ink)}
+  .ctrl{margin:10px 0 3px}
+  .ctrl .top{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;letter-spacing:.04em}
+  .ctrl .val{font-size:12px;color:var(--ink);font-weight:700}
+  .ctrl .note{font-size:11px;color:var(--ink-soft);line-height:1.55;margin-top:2px}
+  input[type=range]{width:100%;margin:4px 0 0;accent-color:#535353;height:18px}
+  .chk{display:flex;align-items:center;gap:8px;font-size:12.5px;margin:10px 0}
+  .chk input{width:15px;height:15px;accent-color:#535353}
+  button{font-family:inherit;font-size:13px;color:var(--ink);cursor:pointer;background:var(--paper);
+    border:2px solid var(--ink);border-radius:0;padding:8px 18px;letter-spacing:.14em;
+    transition:background .1s,color .1s}
+  button:hover{background:var(--ink);color:var(--paper)}
+  button:active{transform:translateY(1px)}
+  button.ghost{border-color:var(--line);font-size:12px;padding:7px 14px;color:var(--ink-soft)}
+  button.ghost:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+  button.primary{background:var(--ink);color:var(--paper)}
+  button.primary:hover{background:var(--paper);color:var(--ink)}
   button.wide{display:block;width:100%;margin-top:8px}
   .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
   .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-  .chip{font-size:12.5px;padding:4px 10px;cursor:pointer;color:var(--ink-soft);border:2px dashed rgba(47,43,38,.35);
-    border-radius:255px 15px 225px 15px/15px 225px 15px 255px;background:transparent}
-  #readout{font-size:12.5px;line-height:1.9;color:var(--ink-soft);font-family:ui-monospace,monospace}
+  .chip{font-size:11px;padding:5px 9px;cursor:pointer;color:var(--ink-soft);border:2px solid var(--line);
+    border-radius:0;background:transparent;letter-spacing:.04em}
+  .chip:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+  #readout{font-size:11.5px;line-height:1.95;color:var(--ink-soft)}
   #readout b{color:var(--ink)}
-  #warn{font-size:13px;color:var(--red);line-height:1.6;margin-top:6px;display:none}
+  #warn{font-size:12px;color:var(--red);line-height:1.6;margin-top:8px;display:none;
+    border-left:3px solid var(--red);padding-left:8px}
   #warn.on{display:block}
   #hud{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:8px;flex-wrap:wrap}
-  #collected{font-size:23px;letter-spacing:.2em;min-height:32px;line-height:1.35;flex:1;
-    border-bottom:2px dotted rgba(47,43,38,.3);padding-bottom:4px;word-break:break-all}
-  #collected .blank{color:rgba(47,43,38,.22)}
-  #meta{font-size:13px;color:var(--ink-soft);white-space:nowrap;font-family:ui-monospace,monospace}
-  canvas{display:block;width:100%;height:auto;border:2.5px solid var(--ink);
-    border-radius:12px 4px 14px 4px/4px 14px 4px 12px;box-shadow:3px 4px 0 rgba(47,43,38,.16);touch-action:manipulation}
-  .tip{font-size:13px;color:var(--ink-soft);letter-spacing:.05em}
+  #collected{font-size:20px;letter-spacing:.25em;min-height:30px;line-height:1.4;flex:1;padding-bottom:4px;word-break:break-all}
+  #collected .blank{color:var(--line)}
+  #meta{font-size:12px;color:var(--ink-soft);white-space:nowrap;letter-spacing:.08em}
+  canvas{display:block;width:100%;height:auto;background:var(--paper);
+    border-bottom:2px solid var(--line);touch-action:manipulation}
+  .tip{font-size:12px;color:var(--ink-soft);letter-spacing:.06em;line-height:1.7}
   section{display:none}
   section.on{display:block}
-  .question-box{font-size:clamp(21px,3.4vw,29px);line-height:1.9;letter-spacing:.12em;margin:6px 0 4px}
-  .answer-big{font-size:clamp(27px,5vw,44px);letter-spacing:.1em;color:var(--red);margin:10px 0;line-height:1.5;word-break:break-all}
-  .verdict{font-size:15px;margin-top:12px;min-height:22px;letter-spacing:.06em}
+  .question-box{font-size:clamp(18px,3vw,26px);line-height:1.9;letter-spacing:.14em;margin:8px 0 4px}
+  .answer-big{font-size:clamp(24px,4.5vw,38px);letter-spacing:.14em;color:var(--ink);margin:10px 0;
+    line-height:1.5;word-break:break-all;font-weight:700}
+  .verdict{font-size:12.5px;margin-top:12px;min-height:22px;letter-spacing:.06em}
   .verdict.bad{color:var(--red)}
   .verdict.good{color:var(--green)}
-  .stamp{display:inline-block;border:3px double var(--red);color:var(--red);padding:4px 14px;font-size:14px;
-    letter-spacing:.3em;transform:rotate(-6deg);border-radius:6px;margin-bottom:8px}
-  .divider{border:none;border-top:2px dashed rgba(47,43,38,.3);margin:16px 0}
-  #res-note{display:none;white-space:pre-wrap;word-break:break-word;font-size:clamp(17px,2.6vw,21px);
-    line-height:2;letter-spacing:.08em;margin:16px 0 4px;padding:14px 18px;
-    background:rgba(255,255,255,.5);border:2px dashed rgba(47,43,38,.45);
-    border-radius:255px 15px 225px 15px/15px 225px 15px 255px;transform:rotate(-.4deg)}
-  #title-big{font-size:clamp(34px,7vw,58px);letter-spacing:.1em;margin:16px 0 4px}
+  .stamp{display:inline-block;border:2px solid var(--ink);color:var(--ink);padding:5px 14px;font-size:11px;
+    letter-spacing:.34em;border-radius:0;margin-bottom:10px}
+  .divider{border:none;border-top:2px solid var(--line);margin:16px 0}
+  #res-note{display:none;white-space:pre-wrap;word-break:break-word;font-size:clamp(15px,2.4vw,19px);
+    line-height:2;letter-spacing:.1em;margin:16px 0 4px;padding:14px 16px;
+    background:var(--paper);border:2px dashed var(--line);border-radius:0}
+  #title-big{font-size:clamp(26px,5.5vw,44px);letter-spacing:.28em;margin:16px 0 8px}
   .center{text-align:center;padding:26px 10px}
   @media(max-width:900px){#wrap{flex-direction:column}#panel{position:static;width:100%;flex:none;max-height:none}}
 </style>
@@ -111,19 +111,16 @@
           <div id="meta"></div>
         </div>
         <canvas id="cv"></canvas>
-        <div class="row" style="margin-top:12px">
-          <button class="primary" id="btn-answer">我要作答</button>
-          <button class="ghost" id="btn-retry">重來</button>
-          <button class="ghost" id="btn-quit">回標題</button>
-          <button class="ghost" id="btn-mute">♪ 音效開</button>
-          <span class="tip" id="game-tip">空白鍵 / 點擊跳躍・按住跳更高</span>
+        <!-- 平常什麼都不放，撞到之後才冒出「直接作答」 -->
+        <div class="row" id="death-row" style="margin-top:12px;justify-content:center;display:none">
+          <button class="primary" id="btn-answer">直接作答</button>
         </div>
       </div>
     </section>
 
     <section id="scr-quiz">
       <div class="sheet">
-        <div class="stamp">關卡通過</div>
+        <div class="stamp">S T A G E   C L E A R</div>
         <div class="tip" id="quiz-lead">你一路閃過的文字，組合起來是：</div>
         <div class="question-box" id="quiz-question"></div>
         <hr class="divider">
@@ -139,7 +136,7 @@
 
     <section id="scr-result">
       <div class="sheet">
-        <div class="stamp" style="border-color:#3f7a4d;color:#3f7a4d">通關</div>
+        <div class="stamp">C L E A R</div>
         <div class="tip">問題</div>
         <div class="question-box" id="res-question"></div>
         <div class="tip">你獲得的答案</div>
@@ -156,7 +153,7 @@
   </main>
 </div>
 
-<script>window.__BAKED__={"title":"這只是一個簡單的闖關遊戲","subtitle":"一邊閃過文字，一邊把它們記在心裡","question":"世界上最高的山是介於尼泊爾與西藏交界的珠穆朗瑪峰，那世界上最深的海溝馬里亞納海溝位於哪一個海洋？","answers":"太平洋","hint":"就那幾個洋，猜猜看","quizLead":"還記得剛才那些字問了什麼嗎？寫下你的答案：","finalNote":"這邊就是通關後的答案","startSpeed":400,"speedStep":9,"maxSpeed":1360,"warmup":1.2,"jumpV":900,"gravity":2250,"cutV":320,"landLag":0.03,"buffer":0.05,"doubleJump":false,"cell":34,"maxStack":4,"maxChars":3,"gapScale":1.04,"minGap":1,"gapBase":78,"gapStack":22,"canvasH":340,"heightLink":1,"seed":1,"randomSeed":true,"gapJitter":0.12,"riseChance":100,"allowLift":true,"lowBias":0.5,"sizeBias":0.25,"lives":1,"forgive":5,"invincible":false,"deathDelay":0.85,"sfx":true,"sfxVol":0.6,"sfxPass":false,"hudCollected":false,"hudProgress":false,"progressBar":true,"allowSkip":true,"quizShowQuestion":false,"resultShowQuestion":true,"hintAfter":3,"revealAfter":0};</script><script>
+<script>window.__BAKED__={"title":"文字闖關","subtitle":"一邊閃過文字，一邊把它們記在心裡","question":"藤子F不二雄筆下的機器貓「哆啦A夢」是在二十世紀誕生，根據官方設定，這隻擁有四次元口袋的貓型機器人，誕生的「未來年份」是西元哪一年？","answers":"2112年、2112","hint":"你可以google","quizLead":"還記得剛才那些字問了什麼嗎？寫下你的答案：","finalNote":"密碼就是2112","startSpeed":410,"speedStep":9,"maxSpeed":580,"warmup":1.2,"jumpV":1030,"gravity":3500,"cutV":260,"landLag":0.03,"buffer":0.12,"doubleJump":false,"cell":34,"maxStack":3,"maxChars":2,"gapScale":1.48,"minGap":1.6,"gapBase":78,"gapStack":22,"canvasH":340,"heightLink":0.85,"seed":1,"randomSeed":true,"gapJitter":0.22,"riseChance":95,"allowLift":true,"lowBias":0.35,"sizeBias":0.25,"lieChance":50,"lives":1,"forgive":5,"invincible":false,"deathDelay":0.85,"sfx":true,"sfxVol":0.6,"sfxPass":false,"hudCollected":false,"hudProgress":false,"allowSkip":true,"quizShowQuestion":false,"resultShowQuestion":true,"hintAfter":3,"revealAfter":0};</script><script>
 (function(){
 "use strict";
 const $ = id => document.getElementById(id);
@@ -178,9 +175,10 @@ const DEFAULTS = {
   cell:34, maxStack:3, maxChars:3, gapScale:0.72, minGap:1, gapBase:78, gapStack:22, canvasH:340,
   heightLink:0.85,
   seed:1, randomSeed:false, gapJitter:0.12, riseChance:60, allowLift:true, lowBias:0.35, sizeBias:0.3,
+  lieChance:25,
   lives:1, forgive:5, invincible:false, deathDelay:0.85,
   sfx:true, sfxVol:0.6, sfxPass:true,
-  hudCollected:false, hudProgress:false, progressBar:true, allowSkip:true,
+  hudCollected:false, hudProgress:false, allowSkip:true,
   quizShowQuestion:false, resultShowQuestion:true, hintAfter:3, revealAfter:0
 };
 
@@ -222,6 +220,8 @@ const SPEC = [
 
   {g:"rand", k:"gapJitter", label:"間距隨機加寬", min:0, max:.6, step:.02, unit:"", rebuild:1,
    note:"只會在基準間距之上隨機加寬、不會變窄，0.12 就是最多 +12%"},
+  {g:"rand", k:"lieChance", label:"橫躺機率", min:0, max:100, step:5, unit:" %", rebuild:1,
+   note:"兩個字以上的組別有這個機率改成「一排躺在地上」而不是往上疊。只有一格高，但很寬，要跳得夠遠才過得去"},
   {g:"rand", k:"riseChance", label:"高度隨機機率", min:0, max:100, step:5, unit:" %", rebuild:1,
    note:"每組都是固定欄高（＝最多堆疊的格數）。字數不足時，有這個機率把文字隨機散在格子裡：可能浮在半空、也可能中間空一格"},
   {g:"rand", k:"lowBias", label:"偏好低處的程度", min:0, max:.8, step:.05, unit:"", rebuild:1,
@@ -252,7 +252,6 @@ const SPEC = [
   {g:"quiz", k:"hudCollected", label:"遊戲中顯示已閃過的文字", type:"check",
    note:"關掉＝玩家得自己記住（預設關閉）"},
   {g:"quiz", k:"hudProgress", label:"遊戲中顯示進度數字", type:"check"},
-  {g:"quiz", k:"progressBar", label:"畫面上方的進度條", type:"check"},
   {g:"quiz", k:"allowSkip", label:"允許中途直接作答", type:"check",
    note:"遊戲畫面多一顆「我要作答」按鈕，沒跑完也能猜"},
   {g:"quiz", k:"quizShowQuestion", label:"作答時把題目秀出來", type:"check",
@@ -293,20 +292,6 @@ function save(){
 /* ================= 小工具 ================= */
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function show(name){["title","game","quiz","result"].forEach(s=>$("scr-"+s).classList.toggle("on", s===name));}
-function roughLine(ctx,x1,y1,x2,y2,rnd,wob){
-  wob = wob==null?1.6:wob;
-  for(let p=0;p<2;p++){
-    const o=()=>(rnd()-0.5)*wob*2;
-    ctx.beginPath();
-    ctx.moveTo(x1+o(),y1+o());
-    ctx.quadraticCurveTo((x1+x2)/2+o()*1.6,(y1+y2)/2+o()*1.6,x2+o(),y2+o());
-    ctx.stroke();
-  }
-}
-function roughRect(ctx,x,y,w,h,rnd,wob){
-  roughLine(ctx,x,y,x+w,y,rnd,wob);roughLine(ctx,x+w,y,x+w,y+h,rnd,wob);
-  roughLine(ctx,x+w,y+h,x,y+h,rnd,wob);roughLine(ctx,x,y+h,x,y,rnd,wob);
-}
 
 /* ================= 音效（Web Audio 即時合成，不需外部檔案） ================= */
 let AC = null, MASTER = null, muted = false;
@@ -403,7 +388,7 @@ function prepareLevel(){
 
 /* ================= 引擎 ================= */
 const cv = $("cv"), ctx = cv.getContext("2d");
-const INK = "#2f2b26";
+const INK = "#535353";
 let W=880, H=340, DPR=1, groundY=266;
 const player = {x:96,y:0,vy:0,w:34,h:42,onGround:true,air:0,jumpsLeft:0,inv:0};
 const game = {running:false,t:0,last:0,speed:300,scroll:0,obstacles:[],passed:0,
@@ -436,6 +421,19 @@ function buildObstacles(baseW, groups, seed){
     const rnd = mulberry32((((seed*7919) ^ (i*104729)) >>> 0) || 1);
     // 每一組都佔固定的欄高（slots 格）。字數不足時，把文字隨機分配到其中幾格，
     // 沒被佔到的格子就成為離地的空間或中間的空隙。
+    // 另一種型態：整組「橫躺」成一排貼在地上，只有一格高但很寬。
+    const lie = g.length > 1 && rnd()*100 < CFG.lieChance;
+    if(lie){
+      const cells = g.map((ch,k)=>({dx:k*cell, top:cell, ch:ch}));
+      const o = {x:x, w:g.length*cell, chars:g, cells:cells, float:0, topOff:cell,
+                 duckable:false, lie:true, n:g.length, i:i, seed:(i*9301+49297)>>>0, passed:false};
+      out.push(o);
+      sp = Math.min(CFG.maxSpeed, sp + CFG.speedStep);
+      const gapL = gapFor(sp, o.topOff, o.w) * (1 + rnd()*CFG.gapJitter);
+      o.gapAfter = gapL; o.speedAfter = sp;
+      x += o.w + gapL;
+      return;
+    }
     let idx;
     if(g.length >= slots || rnd()*100 >= CFG.riseChance){
       idx = g.map((_,k)=>k);                       // 貼地、緊密堆疊
@@ -455,18 +453,19 @@ function buildObstacles(baseW, groups, seed){
       }
       idx.sort((a,b)=>a-b);
     }
-    const boxes = idx.map(s => (s+1)*cell);        // 每格上緣離地的高度
+    // 直立：同一個 x、往上疊；文字由上往下讀
+    const cells = idx.map((s,k)=>({dx:0, top:(s+1)*cell, ch:g[g.length-1-k]}));
     const flt = idx[0]*cell;                       // 最底下那格離地多高
     // 這一組的高度＝最高那個方塊的上緣，跟它由幾個字組成無關
-    const topOff = boxes[boxes.length-1];
+    const topOff = (idx[idx.length-1]+1)*cell;
     const duckable = flt >= DUCK_H;                // 底下鑽得過去（但間距仍以最高處計算）
-    out.push({x:x, w:cell, chars:g, boxes:boxes, float:flt, topOff:topOff, duckable:duckable,
-              n:g.length, i:i, seed:(i*9301+49297)>>>0, passed:false});
+    const o = {x:x, w:cell, chars:g, cells:cells, float:flt, topOff:topOff, duckable:duckable,
+               lie:false, n:g.length, i:i, seed:(i*9301+49297)>>>0, passed:false};
+    out.push(o);
     sp = Math.min(CFG.maxSpeed, sp + CFG.speedStep);
-    const gap = gapFor(sp, topOff) * (1 + rnd()*CFG.gapJitter);   // 只會變寬，不會變窄
-    const o = out[out.length-1];
+    const gap = gapFor(sp, topOff, o.w) * (1 + rnd()*CFG.gapJitter);   // 只會變寬，不會變窄
     o.gapAfter = gap; o.speedAfter = sp;
-    x += cell + gap;
+    x += o.w + gap;
   });
   return out;
 }
@@ -512,7 +511,7 @@ function autoTest(seed){
     for(const o of obs){ if(o.x + o.w >= PX){ nxt = o; break; } }
     if(nxt && P.onGround && !nxt.duckable){          // 鑽得過去就不用跳
       const need = nxt.topOff + 2;
-      const prof = jumpProfile(need, requiredApex(need, speed));
+      const prof = jumpProfile(need, apexFor(need, speed, nxt.w));
       if(!prof.ok) return {ok:false, why:"跳躍高度不足，越不過第 "+(nxt.i+1)+" 組（需要 "+Math.round(need)+" px）"};
       const cross = (nxt.w + PW)/speed;
       if(prof.tExit - prof.tEnter < cross) return {ok:false, why:"滯空時間不足以橫越第 "+(nxt.i+1)+" 組"};
@@ -537,8 +536,10 @@ function autoTest(seed){
     for(const o of obs){
       o.x -= dx;
       if(PX + PW - CFG.forgive > o.x + 3 && PX + CFG.forgive < o.x + o.w - 3){
-        for(const b of o.boxes){
-          const bt = gy - b, bb = bt + cell;
+        for(const b of o.cells){
+          const bl = o.x + b.dx, br = bl + cell;
+          if(PX + PW - CFG.forgive <= bl + 3 || PX + CFG.forgive >= br - 3) continue;
+          const bt = gy - b.top, bb = bt + cell;
           if(py + PH - 4 > bt + 3 && py + 4 < bb - 3)
             return {ok:false, why:"空間太窄：跳躍的落點會撞上第 "+(o.i+1)+" 組（把「間距係數」調高，或降低速度）"};
         }
@@ -556,11 +557,30 @@ function jumpHeight(){ return (CFG.jumpV*CFG.jumpV)/(2*CFG.gravity); }
    起跳一律是滿速，玩家在高度 hr 放開按鍵（速度被截到 cutV），頂點剛好落在 need。
    回傳這一跳的滯空時間、以及在 need 高度以上的時間區間。 */
 const PROFILES = new Map();
-/* 要越過 need 這個高度、而且要在上面待滿 cross 這段時間，頂點至少得到多高 */
-function requiredApex(need, speed){
-  const cross = (Math.round(CFG.cell) + 34)/Math.max(1, speed);
-  const extra = CFG.gravity*cross*cross/8;          // 在 need 之上待滿 cross 所需的餘裕高度
-  return need + Math.max(6, extra*1.15);
+/* 要越過 need 這個高度、而且要在它上面待滿 cross（跨過整個寬度所需的時間），
+   頂點至少得跳到多高。因為有短跳截斷，上升遠比下降快，不能用對稱拋物線估，
+   直接拿真實軌跡二分搜尋。頂點量化到 2px，讓軌跡快取容易命中。 */
+const APEX_CACHE = new Map();
+function apexFor(need, speed, width){
+  const cross = ((width || Math.round(CFG.cell)) + 34)/Math.max(1, speed);
+  const key = need.toFixed(1)+"|"+cross.toFixed(3)+"|"+CFG.jumpV+"|"+CFG.gravity+"|"+CFG.cutV;
+  const hit = APEX_CACHE.get(key);
+  if(hit !== undefined) return hit;
+  const maxA = jumpHeight();
+  const okAt = A => { const p = jumpProfile(need, A); return p.ok && (p.tExit - p.tEnter) >= cross*1.06; };
+  let lo = need + 6, hi = maxA, ans;
+  if(lo >= hi || !okAt(maxA)){
+    ans = Math.max(lo, maxA);                  // 再高也不夠，交給後面的判定回報失敗
+  }else{
+    for(let i=0;i<10;i++){
+      const mid = Math.round((lo+hi)/4)*2;     // 量化到 2px
+      if(mid <= lo || mid >= hi) break;
+      if(okAt(mid)) hi = mid; else lo = mid;
+    }
+    ans = hi;
+  }
+  APEX_CACHE.set(key, ans);
+  return ans;
 }
 function jumpProfile(need, apex){
   need = Math.max(0, need);
@@ -591,9 +611,9 @@ function jumpProfile(need, apex){
 
 /* 這一組之後要留多少距離：need 是這一組實際要越過的高度（可鑽過的為 0）。
    heightLink 為 1 時完全依照「這一跳實際需要多久」來排，矮的障礙後面就會逼近。 */
-function gapFor(speed, need){
+function gapFor(speed, need, width){
   const full = airTime();
-  const prof = jumpProfile(need, requiredApex(need, speed));
+  const prof = jumpProfile(need, apexFor(need, speed, width));
   const tNeed = prof.ok ? Math.min(prof.tLand, full) : full;
   const ratio = tNeed/full;                       // 這一跳只需要滿跳的幾成時間
   const cell = Math.max(1, Math.round(CFG.cell));
@@ -665,11 +685,11 @@ function spillChars(){
   game.falling = [];
   for(const o of game.obstacles){
     if(o.x > W + 60 || o.x + o.w < -60) continue;
-    for(let k=0;k<o.chars.length;k++){
+    for(const b of o.cells){
       game.falling.push({
-        ch: o.chars[o.chars.length-1-k],
-        x: o.x + cell/2,
-        y: groundY - o.boxes[k] + cell/2,
+        ch: b.ch,
+        x: o.x + b.dx + cell/2,
+        y: groundY - b.top + cell/2,
         vx: (Math.random()-0.5)*220,
         vy: -80 - Math.random()*220,
         rot: 0,
@@ -680,9 +700,26 @@ function spillChars(){
   }
 }
 
+/* 主迴圈的外殼：就算這一幀算壞了也要把下一幀排出去，畫面絕不定格 */
 function loop(now){
-  const dt = Math.min(0.033,(now-game.last)/1000);
-  game.last = now; game.t += dt;
+  const before = game.raf;
+  try{
+    frame(now);
+  }catch(e){
+    if(!drawErr) drawErr = (e && e.message ? e.message : String(e));
+    if(game.raf === before) game.raf = requestAnimationFrame(loop);
+  }
+}
+
+function frame(now){
+  // 時間差一旦變成 NaN（例如瀏覽器沒給時間戳），game.t 會永遠是 NaN，
+  // 後面所有依賴它的計算都會壞掉，所以這裡先擋住。
+  let dt = (now - game.last)/1000;
+  if(!isFinite(dt) || dt < 0) dt = 1/60;
+  dt = Math.min(0.033, dt);
+  game.last = isFinite(now) ? now : (game.last + dt*1000);
+  if(!isFinite(game.t)) game.t = 0;
+  game.t += dt;
 
   if(game.dying){
     game.dieT += dt;
@@ -693,6 +730,7 @@ function loop(now){
       p.vy += 1700*dt; p.x += p.vx*dt; p.y += p.vy*dt;
       p.rot += p.vr*dt; p.life += dt;
     }
+    if(game.dieT >= CFG.deathDelay) showDeathRow(true);
     draw();
     game.raf = requestAnimationFrame(loop); return;
   }
@@ -717,8 +755,10 @@ function loop(now){
   for(const o of game.obstacles){
     o.x -= dx;
     if(px + player.w - pad > o.x + 3 && px + pad < o.x + o.w - 3){
-      for(const b of o.boxes){
-        const bt = groundY - b, bb = bt + cellNow;
+      for(const b of o.cells){
+        const bl = o.x + b.dx, br = bl + cellNow;
+        if(px + player.w - pad <= bl + 3 || px + pad >= br - 3) continue;
+        const bt = groundY - b.top, bb = bt + cellNow;
         if(py + player.h - 4 > bt + 3 && py + 4 < bb - 3){
           hit();
           if(game.dying){ draw(); game.raf = requestAnimationFrame(loop); return; }
@@ -751,63 +791,69 @@ function stepPlayer(dt){
   if(player.onGround && game.lagT <= 0 && game.bufferT > 0){ game.bufferT = 0; jump(); }
 }
 
-/* ================= 繪圖 ================= */
-function paperBg(){
-  ctx.fillStyle="#f6eddc"; ctx.fillRect(0,0,W,H);
-  const rnd = mulberry32(77);
-  ctx.fillStyle="rgba(140,118,84,.16)";
-  for(let i=0;i<Math.floor(W*H/900);i++) ctx.fillRect(Math.floor(rnd()*W),Math.floor(rnd()*H),1,1);
-  ctx.strokeStyle="rgba(120,140,160,.20)"; ctx.lineWidth=1;
-  for(let y=40;y<H;y+=28){ ctx.beginPath(); ctx.moveTo(0,y+.5); ctx.lineTo(W,y+.5); ctx.stroke(); }
-  ctx.strokeStyle="rgba(190,90,70,.25)";
-  ctx.beginPath(); ctx.moveTo(46.5,0); ctx.lineTo(46.5,H); ctx.stroke();
+/* ================= 繪圖（Chrome 離線恐龍風：白底、單色 #535353、硬邊像素） ================= */
+const px = v => Math.round(v);                  // 一律對齊整數像素，避免糊邊
+
+/* 繪圖若拋出例外，動畫迴圈就會斷掉、畫面定格。
+   包一層保險：出錯就記下來顯示在畫面上，但遊戲繼續跑。 */
+let drawErr = null;
+function draw(){
+  try{ drawScene(); }
+  catch(e){
+    if(!drawErr){ drawErr = (e && e.message ? e.message : String(e)); }
+    try{
+      ctx.fillStyle = "#8f3d2b";
+      ctx.font = '12px ui-monospace,Menlo,Consolas,monospace';
+      ctx.textAlign = "left"; ctx.textBaseline = "top";
+      ctx.fillText("繪圖錯誤：" + drawErr, 12, 12);
+    }catch(_){}
+  }
 }
 
-function draw(){
-  paperBg();
-  const boil = Math.floor(game.t*7);
-  const rndG = mulberry32(boil*31+5);
+function drawScene(){
+  ctx.fillStyle = "#ffffff"; ctx.fillRect(0,0,W,H);
   const cell = Math.round(CFG.cell);
-  ctx.lineCap="round"; ctx.lineJoin="round";
+  ctx.lineCap = "butt"; ctx.lineJoin = "miter";
 
-  ctx.strokeStyle="rgba(47,43,38,.30)"; ctx.lineWidth=1.6;
-  const hoff = -(game.scroll*0.22) % (14*180);
+  // 遠景像素雲
+  ctx.fillStyle = "#c8c8c8";
+  const coff = -(game.scroll*0.22) % (14*180);
   for(const h of game.hills){
-    const hx = h.x + hoff;
-    if(hx < -200 || hx > W+200) continue;
-    ctx.beginPath();
-    ctx.moveTo(hx-h.r, groundY-6);
-    ctx.quadraticCurveTo(hx, groundY-6-h.r*0.9, hx+h.r, groundY-6);
-    ctx.stroke();
+    const hx = px(h.x + coff), hy = px(groundY - 150 - (h.r % 60));
+    if(hx < -90 || hx > W+90 || hy < 8) continue;
+    const u = 4;                                 // 像素單位
+    ctx.fillRect(hx+u*2, hy,       u*6, u);
+    ctx.fillRect(hx+u,   hy+u,     u*9, u);
+    ctx.fillRect(hx,     hy+u*2,   u*11, u);
+    ctx.fillRect(hx+u,   hy+u*3,   u*9, u);
   }
 
-  ctx.strokeStyle=INK; ctx.lineWidth=2.4;
-  roughLine(ctx,0,groundY,W,groundY,rndG,1.8);
-  ctx.lineWidth=1.4; ctx.strokeStyle="rgba(47,43,38,.55)";
-  const step=46, off=-(game.scroll%step);
-  for(let x=off;x<W;x+=step){
+  // 地面：一條實線 + 隨機小石子
+  ctx.fillStyle = "#535353";
+  ctx.fillRect(0, px(groundY), W, 2);
+  const step = 34, off = -(game.scroll % step);
+  for(let x=off; x<W+step; x+=step){
     const r2 = mulberry32(Math.floor((game.scroll+x)/step)*7919);
-    const len = 5 + r2()*7;
-    ctx.beginPath(); ctx.moveTo(x,groundY+3); ctx.lineTo(x+(r2()-0.5)*6, groundY+3+len); ctx.stroke();
+    if(r2() < 0.55) continue;
+    const w = 2 + Math.floor(r2()*4), yy = px(groundY + 5 + Math.floor(r2()*7));
+    ctx.fillRect(px(x + r2()*12), yy, w, 2);
   }
 
+  // 障礙物：灰色外框、透明底、灰色文字
+  const B = 2;                                 // 框線粗細
   for(const o of game.obstacles){
     if(o.x > W+60 || o.x + o.w < -60) continue;
-    const rnd = mulberry32(o.seed + boil);
-    if(o.float > 3){   // 浮空的組別在地上留一道淡淡的影子
-      ctx.strokeStyle="rgba(47,43,38,.18)"; ctx.lineWidth=1.3;
-      ctx.beginPath(); ctx.ellipse(o.x+cell/2, groundY+2, cell*0.5, 2.4, 0, 0, Math.PI*2); ctx.stroke();
-    }
-    for(let k=0;k<o.chars.length;k++){
-      const cy = groundY - o.boxes[k];
-      ctx.strokeStyle=INK; ctx.lineWidth=1.8;
-      roughRect(ctx,o.x,cy,cell,cell,rnd,1.5);
-      ctx.fillStyle="rgba(47,43,38,.06)"; ctx.fillRect(o.x+2,cy+2,cell-4,cell-4);
-      if(!game.dying){                       // 死掉時格子留著、字掉出去
-        ctx.fillStyle=INK;
-        ctx.font = (cell-11)+'px "Xingkai TC","STKaiti","KaiTi","PingFang TC","Microsoft JhengHei",serif';
+    for(const b of o.cells){
+      const cx = px(o.x + b.dx), cy = px(groundY - b.top);
+      ctx.fillStyle = "#535353";
+      ctx.fillRect(cx, cy, cell, B);                 // 上
+      ctx.fillRect(cx, cy+cell-B, cell, B);          // 下
+      ctx.fillRect(cx, cy, B, cell);                 // 左
+      ctx.fillRect(cx+cell-B, cy, B, cell);          // 右
+      if(!game.dying){                       // 死掉時框留著、字掉出去
+        ctx.font = "700 " + (cell-12) + 'px ui-monospace,Menlo,Consolas,"PingFang TC","Microsoft JhengHei",monospace';
         ctx.textAlign="center"; ctx.textBaseline="middle";
-        ctx.fillText(o.chars[o.chars.length-1-k], o.x+cell/2, cy+cell/2+1);
+        ctx.fillText(b.ch, cx+cell/2, cy+cell/2+1);
       }
     }
   }
@@ -815,71 +861,131 @@ function draw(){
   // 掉落中的文字碎片
   if(game.falling.length){
     ctx.textAlign="center"; ctx.textBaseline="middle";
-    ctx.font = (cell-11)+'px "Xingkai TC","STKaiti","KaiTi","PingFang TC","Microsoft JhengHei",serif';
+    ctx.font = "700 " + (cell-12) + 'px ui-monospace,Menlo,Consolas,"PingFang TC","Microsoft JhengHei",monospace';
     for(const p of game.falling){
       const a = 1 - p.life/0.55;
       if(a <= 0 || p.y > H + 40) continue;
       ctx.save();
       ctx.globalAlpha = Math.max(0, a);
-      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
-      ctx.fillStyle = INK;
+      ctx.translate(px(p.x), px(p.y)); ctx.rotate(p.rot);
+      ctx.fillStyle = "#535353";
       ctx.fillText(p.ch, 0, 0);
       ctx.restore();
     }
     ctx.globalAlpha = 1;
   }
 
-  drawRunner(rndG);
-
-  if(CFG.progressBar){
-    const total = level.groups.length || 1;
-    const p = Math.min(1, game.passed/total);
-    ctx.strokeStyle="rgba(47,43,38,.35)"; ctx.lineWidth=1.6;
-    roughLine(ctx,20,22,W-20,22,mulberry32(3),1.2);
-    if(p>0){ ctx.strokeStyle="#c0512f"; ctx.lineWidth=3.2; roughLine(ctx,20,22,20+(W-40)*p,22,mulberry32(4),1.2); }
-  }
+  drawRunner();
 
   if(CFG.lives > 1){
-    ctx.fillStyle="#c0512f"; ctx.font='16px system-ui,sans-serif';
-    ctx.textAlign="left"; ctx.textBaseline="top";
-    ctx.fillText("♥".repeat(Math.max(0,game.hearts)), 20, 30);
+    ctx.fillStyle = "#535353";
+    ctx.font = '700 13px ui-monospace,Menlo,Consolas,monospace';
+    ctx.textAlign = "left"; ctx.textBaseline = "top";
+    ctx.fillText("HP " + "■".repeat(Math.max(0,game.hearts)), 14, 14);
   }
 
   if(game.dying){
-    ctx.fillStyle="rgba(243,234,216,.55)"; ctx.fillRect(0,0,W,H);
-    ctx.fillStyle="#c0512f"; ctx.textAlign="center"; ctx.textBaseline="middle";
-    ctx.font='28px "Xingkai TC","STKaiti","KaiTi",serif';
-    ctx.fillText("撞到了！", W/2, H/2 - 14);
+    ctx.fillStyle = "rgba(255,255,255,.72)"; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = "#535353"; ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.font = '700 22px ui-monospace,Menlo,Consolas,"PingFang TC","Microsoft JhengHei",monospace';
+    ctx.fillText("G A M E   O V E R", W/2, H/2 - 18);
     if(game.dieT >= CFG.deathDelay){
-      ctx.fillStyle="rgba(47,43,38,.72)";
-      ctx.font='17px "Xingkai TC","STKaiti","KaiTi",serif';
-      ctx.fillText("按空白鍵或點一下畫面，從頭再來", W/2, H/2 + 22);
+      drawReloadIcon(px(W/2 - 10), px(H/2 + 8));
+      ctx.fillStyle = "#a3a3a3";
+      ctx.font = '12px ui-monospace,Menlo,Consolas,"PingFang TC","Microsoft JhengHei",monospace';
+      ctx.fillText("按空白鍵或點一下畫面，從頭再來", W/2, H/2 + 44);
     }
   }
   if(game.cleared){
-    ctx.fillStyle="rgba(243,234,216,.5)"; ctx.fillRect(0,0,W,H);
-    ctx.fillStyle="#3f7a4d"; ctx.font='30px "Xingkai TC","STKaiti","KaiTi",serif';
-    ctx.textAlign="center"; ctx.textBaseline="middle";
-    ctx.fillText("全部閃過了！", W/2, H/2);
+    ctx.fillStyle = "rgba(255,255,255,.72)"; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = "#535353"; ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.font = '700 22px ui-monospace,Menlo,Consolas,"PingFang TC","Microsoft JhengHei",monospace';
+    ctx.fillText("C L E A R", W/2, H/2);
   }
 }
 
-function drawRunner(rnd){
+/* 重玩圖示：一個像素風的循環箭頭 */
+function drawReloadIcon(x, y){
+  ctx.fillStyle = "#535353";
+  const u = 2;
+  ctx.fillRect(x+u*2, y,       u*6, u);
+  ctx.fillRect(x,     y+u,     u*2, u);
+  ctx.fillRect(x+u*8, y+u,     u*2, u);
+  ctx.fillRect(x,     y+u*2,   u,   u*3);
+  ctx.fillRect(x+u*9, y+u*2,   u,   u*3);
+  ctx.fillRect(x,     y+u*5,   u*2, u);
+  ctx.fillRect(x+u*8, y+u*5,   u*2, u);
+  ctx.fillRect(x+u*2, y+u*6,   u*6, u);
+  ctx.fillRect(x+u*7, y-u,     u,   u*3);   // 箭頭
+  ctx.fillRect(x+u*9, y-u,     u,   u*3);
+}
+
+/* 像素恐龍：17×21 的格點圖，'#' 深灰、'o' 眼睛、'.' 透空。
+   身體 18 列固定，最後 3 列換腳做出跑步動畫。 */
+const DINO_BODY = [
+  ".........######..",
+  "........########.",
+  "........#########",
+  "........###o#####",
+  "........#########",
+  "........#########",
+  "........########.",
+  "........#####....",
+  "#.......#####....",
+  "##.....######....",
+  "###...#######....",
+  "#############....",
+  ".#############...",
+  "..############...",
+  "...##########....",
+  "...#########.....",
+  "...########......"
+];
+/* 會動的是最下面四列：抬腿、伸腿、腳掌位置都會換，動作才看得出來 */
+const DINO_LEGS = [
+  ["...##..###.......", "...##...##.......", "...##............", "..####..........."],  // 後腳著地
+  ["...###..##.......", "..##....##.......", "........##.......", ".......####......"],  // 前腳著地
+  ["...##..##........", "...##..##........", "...##..##........", "..###..###......."]   // 騰空：雙腳併攏
+];
+const DINO_ROWS = DINO_BODY.length + DINO_LEGS[0].length, DINO_COLS = DINO_BODY[0].length;
+
+function drawRunner(){
   if(player.inv > 0 && Math.floor(game.t*14)%2===0) return;
-  const bx=player.x, by=groundY+player.y;
-  ctx.strokeStyle=INK; ctx.lineWidth=2.2;
-  const headR=9, headY=by-player.h+headR-2, sx=bx+player.w/2, sy=headY+headR;
-  ctx.beginPath(); ctx.arc(sx,headY,headR,0,Math.PI*2); ctx.stroke();
-  ctx.fillStyle=INK; ctx.beginPath(); ctx.arc(sx+3.5,headY-1.5,1.6,0,Math.PI*2); ctx.fill();
-  roughLine(ctx,sx,sy,sx,by-14,rnd,1.1);
-  const run = player.onGround ? Math.sin(game.t*15) : 0.6;
-  const air = !player.onGround;
-  roughLine(ctx,sx,sy+5,sx-10,sy+(air?0:12+run*5),rnd,1.1);
-  roughLine(ctx,sx,sy+5,sx+11,sy+(air?-2:12-run*5),rnd,1.1);
-  roughLine(ctx,sx,by-14,sx-9,by-(air?6:Math.max(0,-run*10)),rnd,1.1);
-  roughLine(ctx,sx,by-14,sx+10,by-(air?10:Math.max(0,run*10)),rnd,1.1);
-  ctx.strokeStyle="rgba(47,43,38,.25)"; ctx.lineWidth=1.4;
-  ctx.beginPath(); ctx.ellipse(sx,groundY+2,Math.max(6,16+player.y*0.06),2.6,0,0,Math.PI*2); ctx.stroke();
+  const u = Math.max(1, Math.round(player.h / DINO_ROWS));     // 42 / 21 = 2 px 一格
+  const x0 = px(player.x), y0 = px(groundY + player.y) - DINO_ROWS*u;
+  // 跑越快、腳換越快（任何一個數值出問題都退回站姿，絕不讓恐龍缺腿）
+  const spd = isFinite(game.speed) ? game.speed : 300;
+  const t = isFinite(game.t) ? game.t : 0;
+  let legs = DINO_LEGS[2];
+  if(player.onGround){
+    const i = Math.floor(t * (8 + spd/60)) % 2;
+    legs = DINO_LEGS[isFinite(i) ? Math.abs(i) : 0] || DINO_LEGS[0];
+  }
+  const art = DINO_BODY.concat(legs);
+  for(let r=0;r<art.length;r++){
+    const line = art[r];
+    if(!line) continue;
+    let c = 0;
+    while(c < line.length){                    // 同色的相鄰格子併成一次繪製
+      const ch = line[c];
+      if(ch === "."){ c++; continue; }
+      let n = 1;
+      while(c+n < line.length && line[c+n] === ch) n++;
+      ctx.fillStyle = (ch === "o") ? "#ffffff" : "#535353";
+      ctx.fillRect(x0 + c*u, y0 + r*u, n*u, u);
+      c += n;
+    }
+  }
+}
+
+/* 撞到之後才讓「直接作答」出現；重新開始就收回去 */
+let deathRowOn = false;
+function showDeathRow(on){
+  on = !!on && !!CFG.allowSkip;
+  if(on === deathRowOn) return;
+  deathRowOn = on;
+  const row = $("death-row");
+  if(row) row.style.display = on ? "flex" : "none";
 }
 
 /* ================= 已收集文字 ================= */
@@ -890,8 +996,7 @@ function collectedChars(){
 }
 function renderCollected(){
   const hud = $("hud"), col = $("collected"), meta = $("meta");
-  $("btn-answer").style.display = CFG.allowSkip ? "" : "none";
-  $("btn-mute").style.display = CFG.sfx ? "" : "none";
+  showDeathRow(false);
   col.style.display = CFG.hudCollected ? "" : "none";
   meta.style.display = CFG.hudProgress ? "" : "none";
   hud.style.display = (CFG.hudCollected || CFG.hudProgress) ? "" : "none";
@@ -953,21 +1058,16 @@ function beginGame(){
   game.deaths=0; game.startTime=0;
   show("game"); startLevel();
 }
-$("btn-start").onclick = beginGame;
-$("btn-again").onclick = beginGame;
-$("btn-replay").onclick = ()=>{ show("game"); startLevel(); };
-$("btn-retry").onclick = ()=>{ startLevel(); };
-$("btn-mute").onclick = ()=>{
-  muted = !muted;
-  $("btn-mute").textContent = muted ? "♪ 音效關" : "♪ 音效開";
-  if(!muted) sJump();
-};
-$("btn-answer").onclick = ()=>{
+/* 綁定按鈕：元素不存在就跳過，不會讓後面的程式整段停掉 */
+function on(id, fn){ const el = $(id); if(el) el.onclick = fn; }
+on("btn-start", beginGame);
+on("btn-again", beginGame);
+on("btn-replay", ()=>{ show("game"); startLevel(); });
+on("btn-answer", ()=>{
   game.running = false; cancelAnimationFrame(game.raf);
   goQuiz();
-};
-$("btn-quit").onclick = ()=>{ game.running=false; cancelAnimationFrame(game.raf); show("title"); };
-$("btn-submit").onclick = submitAnswer;
+});
+on("btn-submit", submitAnswer);
 $("in-guess").addEventListener("keydown", e=>{ if(e.key==="Enter") submitAnswer(); });
 
 /* 一次按壓只算一次輸入：按著不放不會連跳，要再跳必須放開重按 */
@@ -1116,8 +1216,9 @@ if(panel && !BAKED){
       sumTop += o.topOff;
     });
     const nOb = obs.length || 1;
-    let gMin=Infinity, gMax=0, jMin=Infinity, jMax=0, fullSafe=0, jumpable=0;
+    let gMin=Infinity, gMax=0, jMin=Infinity, jMax=0, fullSafe=0, jumpable=0, lying=0;
     obs.forEach((o,k)=>{
+      if(o.lie) lying++;
       if(!o.duckable && o.gapAfter != null && k < obs.length-1){
         jumpable++;
         if((o.w + 34 + o.gapAfter)/o.speedAfter >= t) fullSafe++;   // 跳滿也還來得及落地
@@ -1134,7 +1235,8 @@ if(panel && !BAKED){
     $("readout").innerHTML +=
       `<br>字數分佈 ${sizeTxt}`+
       `<br>頂到最高格 <b>${topHit}</b>/${nOb} 組（<b>${(topHit/nOb*100).toFixed(0)}%</b>）`+
-      `・離地 <b>${(lifted/nOb*100).toFixed(0)}%</b>・平均高度 <b>${(sumTop/nOb).toFixed(0)} px</b>`+
+      `・離地 <b>${(lifted/nOb*100).toFixed(0)}%</b>・橫躺 <b>${(lying/nOb*100).toFixed(0)}%</b>`+
+      `・平均高度 <b>${(sumTop/nOb).toFixed(0)} px</b>`+
       (gMax ? `<br>實際間距 <b>${gMin.toFixed(0)}–${gMax.toFixed(0)} px</b>`+
               `（<b>${jMin.toFixed(2)}–${jMax.toFixed(2)}</b> 次跳躍）` : "")+
       (jumpable ? `<br>「一律跳滿」還能安全的組別 <b>${(fullSafe/jumpable*100).toFixed(0)}%</b>`+
@@ -1155,8 +1257,8 @@ if(panel && !BAKED){
     if(test.ok){
       const ts = timingStats(obs);
       const ms = ts.ms;
-      const col = ms==null ? "#3f7a4d" : (ms < 100 ? "#c0512f" : (ms < 180 ? "#a8761f" : "#3f7a4d"));
-      $("readout").innerHTML += `<br><span style="color:#3f7a4d">自動試跑：<b>可以通關 ✓</b>`+
+      const col = ms==null ? "#535353" : (ms < 100 ? "#8f3d2b" : (ms < 180 ? "#8a6d1f" : "#4a7a4a"));
+      $("readout").innerHTML += `<br><span style="color:#4a7a4a">自動試跑：<b>可以通關 ✓</b>`+
         (CFG.randomSeed ? `（連抽 ${tried} 種排列都過）` : ``)+`</span>`+
         (ms==null ? `` : `<br>最緊的起跳窗口 <b style="color:${col}">${ms} 毫秒</b>（第 ${ts.at} 組）`+
           (ms < 100 ? `　很硬` : ms < 180 ? `　有難度` : `　寬鬆`));
