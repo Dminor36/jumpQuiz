@@ -2,6 +2,10 @@
 <html lang="zh-Hant"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 叫瀏覽器不要把這個檔案存起來重複使用，改版後才不會拿到舊的 -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>文字闖關</title>
 <style>
   /* Chrome 離線恐龍遊戲的配色：白底、單一深灰、無圓角、無陰影 */
@@ -14,11 +18,27 @@
     color:var(--ink);background:var(--paper);
     padding:18px;-webkit-font-smoothing:antialiased;
   }
-  #wrap{display:flex;gap:20px;align-items:flex-start;max-width:1360px;margin:0 auto}
+  #wrap{display:flex;gap:20px;align-items:flex-start;margin:0 auto}
   #panel{width:330px;flex:0 0 330px;position:sticky;top:18px;max-height:calc(100vh - 36px);overflow:auto;padding-right:4px}
   #stage{flex:1;min-width:0}
   body.baked #panel{display:none}
-  body.baked #wrap{max-width:900px}
+  /* 遊戲畫面滿版：拿掉外框與內距，畫布自己撐到最大 */
+  /* 遊戲畫面：寬度滿版、上下置中（跟 Chrome 離線頁一樣是一條置中的橫帶） */
+  #scr-game .sheet{border:none;padding:0;background:none;margin:0;
+    min-height:calc(100vh - 36px);display:flex;flex-direction:column;justify-content:center}
+  body.baked #scr-game .sheet{min-height:100vh}
+  body.baked{padding:0}
+  body.baked #wrap{gap:0;max-width:none}
+  /* 編輯器裡也讓遊戲區延伸到視窗右緣，抵銷 body 的內距 */
+  #scr-game .sheet{margin-right:-18px}
+  body.baked #scr-game .sheet{margin-right:0}
+  /* 標題／問答／結果維持好讀的欄寬 */
+  #scr-title .sheet,#scr-quiz .sheet,#scr-result .sheet{max-width:780px;margin-left:auto;margin-right:auto}
+  body.baked #scr-title,body.baked #scr-quiz,body.baked #scr-result{padding:18px}
+  /* 畫布佔滿整個視窗，HUD 與按鈕改成浮在上面，才不會把畫布擠出畫面 */
+  #scr-game{position:relative}
+  #hud{position:absolute;left:0;right:0;top:0;padding:10px 16px;pointer-events:none;z-index:2}
+  #death-row{position:absolute;left:0;right:0;bottom:7%;margin:0;justify-content:center;z-index:2}
   h1{font-size:22px;margin:0 0 2px;letter-spacing:.18em}
   h1 small{display:block;font-size:10px;letter-spacing:.4em;color:var(--ink-soft);margin-top:6px}
   .sheet{background:var(--paper);border:2px solid var(--ink);padding:18px 20px;margin-top:14px}
@@ -62,7 +82,7 @@
   #collected{font-size:20px;letter-spacing:.25em;min-height:30px;line-height:1.4;flex:1;padding-bottom:4px;word-break:break-all}
   #collected .blank{color:var(--line)}
   #meta{font-size:12px;color:var(--ink-soft);white-space:nowrap;letter-spacing:.08em}
-  canvas{display:block;width:100%;height:auto;background:var(--paper);
+  canvas{display:block;margin:0 auto;background:var(--paper);
     border-bottom:2px solid var(--line);touch-action:manipulation}
   .tip{font-size:12px;color:var(--ink-soft);letter-spacing:.06em;line-height:1.7}
   section{display:none}
@@ -97,6 +117,7 @@
       <div class="sheet center">
         <div id="title-big">文字闖關</div>
         <div class="tip" id="title-sub">閃過所有文字，看看它們拼成什麼</div>
+        <div class="tip" id="build-tag" style="opacity:.5;font-size:11px;letter-spacing:.16em;margin-top:10px"></div>
         <div class="row" style="justify-content:center">
           <button class="primary" id="btn-start">開始遊戲</button>
         </div>
@@ -105,7 +126,7 @@
     </section>
 
     <section id="scr-game">
-      <div class="sheet" style="padding:16px 18px">
+      <div class="sheet">
         <div id="hud">
           <div id="collected"></div>
           <div id="meta"></div>
@@ -153,7 +174,7 @@
   </main>
 </div>
 
-<script>window.__BAKED__={"title":"文字闖關","subtitle":"一邊閃過文字，一邊把它們記在心裡","question":"藤子F不二雄筆下的機器貓「哆啦A夢」是在二十世紀誕生，根據官方設定，這隻擁有四次元口袋的貓型機器人，誕生的「未來年份」是西元哪一年？","answers":"2112年、2112","hint":"你可以google","quizLead":"還記得剛才那些字問了什麼嗎？寫下你的答案：","finalNote":"密碼就是2112","startSpeed":410,"speedStep":9,"maxSpeed":580,"warmup":1.2,"jumpV":1030,"gravity":3500,"cutV":260,"landLag":0.03,"buffer":0.12,"doubleJump":false,"cell":34,"maxStack":3,"maxChars":2,"gapScale":1.48,"minGap":1.6,"gapBase":78,"gapStack":22,"canvasH":340,"heightLink":0.85,"seed":1,"randomSeed":true,"gapJitter":0.22,"riseChance":95,"allowLift":true,"lowBias":0.35,"sizeBias":0.25,"lieChance":50,"lives":1,"forgive":5,"invincible":false,"deathDelay":0.85,"sfx":true,"sfxVol":0.6,"sfxPass":false,"hudCollected":false,"hudProgress":false,"allowSkip":true,"quizShowQuestion":false,"resultShowQuestion":true,"hintAfter":3,"revealAfter":0};</script><script>
+<script>window.__BAKED__={"title":"文字闖關","subtitle":"一邊閃過文字，一邊把它們記在心裡","question":"世界上最高的山是位於尼泊爾的聖母峰，那世界上最深的海溝是位於太平洋的什麼海溝？","answers":"馬里亞納海溝、Mariana Trench、馬里雅納海溝、馬里雅那海溝","hint":"馬什麼什麼","quizLead":"英譯問題可以換個字看看或輸入英文","finalNote":"耶","startSpeed":300,"speedStep":4,"maxSpeed":380,"warmup":1.2,"jumpV":470,"gravity":1600,"cutV":150,"landLag":0.08,"buffer":0.12,"doubleJump":false,"cell":22,"maxStack":1,"maxChars":2,"gapScale":0.92,"minGap":2.55,"gapBase":78,"gapStack":22,"viewW":480,"viewH":130,"groundOff":15,"heightLink":0.85,"seed":1,"randomSeed":true,"gapJitter":0.16,"riseChance":45,"allowLift":true,"lowBias":0.15,"sizeBias":0,"lieChance":100,"pctSmall":20,"pctLarge":20,"sizeSmall":0.75,"sizeLarge":1.2,"lives":1,"forgive":7,"invincible":false,"deathDelay":0.85,"runnerImgs":["data:image/png;base64,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","data:image/png;base64,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"],"runnerScale":1,"sfx":true,"sfxVol":0.6,"sfxPass":true,"hudCollected":false,"hudProgress":false,"allowSkip":true,"quizShowQuestion":false,"resultShowQuestion":true,"hintAfter":3,"revealAfter":0};</script><script>
 (function(){
 "use strict";
 const $ = id => document.getElementById(id);
@@ -171,12 +192,14 @@ const DEFAULTS = {
   quizLead:"還記得剛才那些字問了什麼嗎？寫下你的答案：",
   finalNote:"",
   startSpeed:300, speedStep:9, maxSpeed:520, warmup:1.2,
-  jumpV:900, gravity:2500, cutV:320, landLag:0.08, buffer:0.12, doubleJump:false,
-  cell:34, maxStack:3, maxChars:3, gapScale:0.72, minGap:1, gapBase:78, gapStack:22, canvasH:340,
+  jumpV:420, gravity:1200, cutV:150, landLag:0.08, buffer:0.12, doubleJump:false,
+  cell:28, maxStack:1, maxChars:2, gapScale:0.72, minGap:1, gapBase:78, gapStack:22,
+  viewW:480, viewH:130, groundOff:22,
   heightLink:0.85,
   seed:1, randomSeed:false, gapJitter:0.12, riseChance:60, allowLift:true, lowBias:0.35, sizeBias:0.3,
-  lieChance:25,
+  lieChance:100, pctSmall:20, pctLarge:20, sizeSmall:0.75, sizeLarge:1.2,
   lives:1, forgive:5, invincible:false, deathDelay:0.85,
+  runnerImgs:[], runnerScale:1,
   sfx:true, sfxVol:0.6, sfxPass:true,
   hudCollected:false, hudProgress:false, allowSkip:true,
   quizShowQuestion:false, resultShowQuestion:true, hintAfter:3, revealAfter:0
@@ -207,7 +230,7 @@ const SPEC = [
   {g:"level", k:"maxStack", label:"欄高（幾格）", min:1, max:5, step:1, unit:" 格", rebuild:1,
    note:"每組佔的高度。格子比字多的時候，文字就會在這個範圍內隨機分布"},
   {g:"level", k:"maxChars", label:"每組最多幾個字", min:1, max:5, step:1, unit:" 個", rebuild:1,
-   note:"超過欄高時以欄高為準"},
+   note:"橫躺時就是這個長度；直立時最多疊到欄高，超過就自動改成橫躺"},
   {g:"level", k:"heightLink", label:"高度連動間距", min:0, max:1, step:.05, unit:"", rebuild:1,
    note:"0＝每組後面都留一次「跳到最高」的距離（跳滿永遠安全）。越大越依照這一組實際需要的跳躍高度來排：矮的障礙後面會逼得很近，跳太高就會來不及落地"},
   {g:"level", k:"gapScale", label:"間距係數", min:.4, max:2, step:.02, unit:"×", rebuild:1,
@@ -216,10 +239,20 @@ const SPEC = [
    note:"兩組之間至少要有這麼多次跳躍的距離。1＝上一次跳躍剛好落地，下一組才會到；調高就會更寬鬆"},
   {g:"level", k:"gapBase", label:"基礎間距", min:0, max:300, step:5, unit:" px", rebuild:1},
   {g:"level", k:"gapStack", label:"每多一層加寬", min:0, max:80, step:2, unit:" px", rebuild:1},
-  {g:"level", k:"canvasH", label:"畫面高度", min:220, max:480, step:10, unit:" px", rebuild:1},
+  {g:"level", k:"viewW", label:"可視寬度", min:320, max:1000, step:20, unit:"", rebuild:1,
+   note:"一次看得到多長的賽道。數字越小＝畫面被放得越大，但看到障礙物的時間也越短。恐龍固定 34 單位寬，480 大約等於 Chrome 小恐龍的比例"},
+  {g:"level", k:"viewH", label:"橫帶高度", min:90, max:420, step:5, unit:"", rebuild:1,
+   note:"遊戲畫面的高度（設計單位）。寬度一定滿版，這條橫帶會上下置中，就像 Chrome 離線頁。數字越小越像一條細長的帶子"},
+  {g:"level", k:"groundOff", label:"地面離底部", min:10, max:120, step:5, unit:"", rebuild:1,
+   note:"地面線離橫帶下緣多遠，上方剩下的就是天空"},
 
   {g:"rand", k:"gapJitter", label:"間距隨機加寬", min:0, max:.6, step:.02, unit:"", rebuild:1,
    note:"只會在基準間距之上隨機加寬、不會變窄，0.12 就是最多 +12%"},
+  {g:"rand", k:"pctSmall", label:"小尺寸機率", min:0, max:60, step:5, unit:" %", rebuild:1,
+   note:"每一組會隨機抽大／中／小三種尺寸，中尺寸＝剩下的機率"},
+  {g:"rand", k:"pctLarge", label:"大尺寸機率", min:0, max:60, step:5, unit:" %", rebuild:1},
+  {g:"rand", k:"sizeSmall", label:"小尺寸倍率", min:.5, max:.95, step:.05, unit:"×", rebuild:1},
+  {g:"rand", k:"sizeLarge", label:"大尺寸倍率", min:1.05, max:1.8, step:.05, unit:"×", rebuild:1},
   {g:"rand", k:"lieChance", label:"橫躺機率", min:0, max:100, step:5, unit:" %", rebuild:1,
    note:"兩個字以上的組別有這個機率改成「一排躺在地上」而不是往上疊。只有一格高，但很寬，要跳得夠遠才過得去"},
   {g:"rand", k:"riseChance", label:"高度隨機機率", min:0, max:100, step:5, unit:" %", rebuild:1,
@@ -242,6 +275,9 @@ const SPEC = [
   {g:"diff", k:"deathDelay", label:"死亡停頓", min:.2, max:2, step:.05, unit:" 秒",
    note:"撞到後要等這麼久才接受「按空白鍵重來」，避免手殘連按"},
   {g:"diff", k:"invincible", label:"無敵（只用於試手感，會一起被匯出）", type:"check"},
+
+  {g:"runner", k:"runnerScale", label:"角色大小", min:0.4, max:2, step:.05, unit:"×",
+   note:"1 就是剛好填滿判定框（34×42 單位）。放大只改外觀，判定範圍不變"},
 
   {g:"sfx", k:"sfx", label:"開啟音效", type:"check",
    note:"用 Web Audio 即時合成，不需要外部檔案"},
@@ -275,6 +311,10 @@ function sanitize(c){
       c[s.k] = isFinite(v) ? Math.min(s.max, Math.max(s.min, v)) : DEFAULTS[s.k];
     }
   });
+  if(!Array.isArray(c.runnerImgs)) c.runnerImgs = [];
+  if(typeof c.runnerImg === "string" && c.runnerImg && !c.runnerImgs.length) c.runnerImgs = [c.runnerImg];
+  c.runnerImgs = c.runnerImgs.filter(x=>typeof x === "string" && x).slice(0,4);
+  delete c.runnerImg;
   ["title","subtitle","question","answers","hint","quizLead","finalNote"].forEach(k=>{
     if(typeof c[k] !== "string") c[k] = DEFAULTS[k] || "";
   });
@@ -375,7 +415,7 @@ function buildGroups(chars,seed,maxChars,sizeBias){
 function curSeed(){ return CFG.randomSeed ? game.runSeed : Math.round(CFG.seed); }
 function groupsFor(seed){
   const s = (level.text.length*2654435761 + level.chars.length*97 + seed*40503) >>> 0;
-  const maxChars = Math.max(1, Math.min(Math.round(CFG.maxChars), Math.round(CFG.maxStack)));
+  const maxChars = Math.max(1, Math.round(CFG.maxChars));   // 欄高只限制往上疊幾層，不限制橫躺的長度
   return buildGroups(level.chars, s, maxChars, CFG.sizeBias);
 }
 function prepareLevel(){
@@ -389,43 +429,113 @@ function prepareLevel(){
 /* ================= 引擎 ================= */
 const cv = $("cv"), ctx = cv.getContext("2d");
 const INK = "#535353";
-let W=880, H=340, DPR=1, groundY=266;
-const player = {x:96,y:0,vy:0,w:34,h:42,onGround:true,air:0,jumpsLeft:0,inv:0};
+/* 遊戲世界一律用「設計單位」計算，畫面再整個縮放上去。
+   這樣不管瀏覽器多寬，看到的賽道長度都一樣（難度一致），只是整體變大變小。 */
+let W=480, H=250, DPR=1, groundY=210, SCALE=1;
+const player = {x:60,y:0,vy:0,w:34,h:42,onGround:true,air:0,jumpsLeft:0,inv:0};
 const game = {running:false,t:0,last:0,speed:300,scroll:0,obstacles:[],passed:0,
   deaths:0,startTime:0,raf:0,dying:false,dieT:0,cleared:false,clearT:0,hills:[],hearts:1,
   lagT:0,bufferT:0,falling:[],runSeed:1};
 
-function resize(){
-  const rect = cv.parentElement.getBoundingClientRect();
-  W = Math.max(320, Math.floor(rect.width - 36));
-  H = Math.round(W < 520 ? Math.min(CFG.canvasH, 260) : CFG.canvasH);
-  DPR = Math.min(window.devicePixelRatio||1, 2);
-  cv.width = W*DPR; cv.height = H*DPR; cv.style.height = H+"px";
-  ctx.setTransform(DPR,0,0,DPR,0,0);
-  groundY = H - (W<520?54:Math.round(H*0.21));
+/* 算出目前該用多大的畫面（不動 DOM，面板的警告也用同一份計算，不會抓到過期的值）。
+   寬度固定＝賽道長度固定＝難度一致；高度由視窗決定，多出來的就是天空。 */
+function computeView(){
+  const w = Math.max(200, Math.round(CFG.viewW));
+  const par = cv.parentElement;
+  // 先把畫布縮成 0，父層才會回報「真正」的可用寬度。
+  // 不然視窗縮小時，畫布自己的固定寬度會把父層撐住，量到的永遠是舊值。
+  const prevW = cv.style.width;
+  cv.style.width = "0px";
+  let availW = par ? par.clientWidth : 0;
+  if(availW > 0){
+    try{
+      const ps = getComputedStyle(par);
+      availW -= (parseFloat(ps.paddingLeft)||0) + (parseFloat(ps.paddingRight)||0);
+    }catch(e){}
+  }
+  cv.style.width = prevW;
+  if(availW <= 0){
+    // 遊戲畫面還沒顯示時量不到寬度，先用舞台或視窗估一個，面板的數字才不會亂跳
+    const stage = document.getElementById("stage");
+    availW = (stage && stage.clientWidth) || Math.max(320, (window.innerWidth||960) - (BAKED ? 0 : 386));
+  }
+  availW = Math.max(240, availW);
+  const winH = window.innerHeight || 600;
+  const availH = Math.max(160, BAKED ? winH : winH - 36);
+  const groundOff = Math.max(10, Math.round(CFG.groundOff));
+  const minH = Math.round(groundOff + jumpHeight() + player.h + 8);   // 要裝得下跳到最高的恐龍
+  const h = Math.max(minH, Math.round(CFG.viewH));   // 橫帶的高度（設計單位）
+  let scale = availW / w;                        // 寬度優先：一定撐滿
+  let tight = false;
+  if(h * scale > availH){                        // 除非視窗太矮，才縮到塞得下
+    scale = availH / h; tight = true;
+  }
+  return {w:w, h:h, scale:scale, groundOff:groundOff, minH:minH, tight:tight};
 }
-window.addEventListener("resize",()=>{ if($("scr-game").classList.contains("on")) resize(); });
 
-const DUCK_H = 48;   // 離地超過這個高度，玩家可以直接從底下跑過去let onLevelRebuilt = null;   // 面板會掛上來，用來即時更新數據
+let lastLayout = "";
+function resize(force){
+  const v = computeView();
+  const cssW = Math.max(1, Math.round(v.w*v.scale)), cssH = Math.max(1, Math.round(v.h*v.scale));
+  const key = cssW+"x"+cssH+"x"+v.w+"x"+v.h;
+  if(force !== true && key === lastLayout) return;   // 尺寸沒變就別重設畫布（重設會清掉畫面）
+  lastLayout = key;
+  W = v.w; H = v.h; SCALE = v.scale;
+  DPR = Math.min(window.devicePixelRatio||1, 2);
+  cv.width = Math.round(cssW*DPR); cv.height = Math.round(cssH*DPR);
+  cv.style.width = cssW + "px"; cv.style.height = cssH + "px";
+  ctx.setTransform(DPR*SCALE, 0, 0, DPR*SCALE, 0, 0);   // 之後畫的東西全部自動放大
+  groundY = H - v.groundOff;                     // 地面固定離底部這麼遠
+}
+window.addEventListener("resize", ()=>resize());
+window.addEventListener("orientationchange", ()=>setTimeout(()=>resize(), 120));
+/* 視窗大小沒變、但版面變了（面板展開、捲軸出現…）也要跟著調整 */
+try{
+  if(window.ResizeObserver && cv.parentElement){
+    let pending = false;
+    new ResizeObserver(()=>{
+      if(pending) return;
+      pending = true;
+      requestAnimationFrame(()=>{ pending = false; resize(); });
+    }).observe(cv.parentElement);
+  }
+}catch(e){}
+
+const DUCK_H = 48;   // 離地超過這個高度，玩家可以直接從底下跑過去
+let onLevelRebuilt = null;   // 面板會掛上來，用來即時更新數據
 
 /* 依目前參數排出整關的障礙物（遊戲與自動試跑共用同一份，確保一致） */
 function buildObstacles(baseW, groups, seed){
   groups = groups || level.groups;
   seed = (seed==null) ? curSeed() : seed;
-  const cell = Math.round(CFG.cell);
+  const baseCell = Math.round(CFG.cell);
   const slots = Math.max(1, Math.round(CFG.maxStack));   // 固定欄高（格數）
   const out = [];
   let x = baseW + CFG.startSpeed*CFG.warmup + 60;
   let sp = CFG.startSpeed;
   groups.forEach((g,i)=>{
     const rnd = mulberry32((((seed*7919) ^ (i*104729)) >>> 0) || 1);
+    // 每一個字各自抽大／中／小，像仙人掌叢一樣高低不齊
+    const sizes = g.map(()=>{
+      const roll = rnd()*100;
+      const mul = roll < CFG.pctSmall ? CFG.sizeSmall
+                : roll < CFG.pctSmall + CFG.pctLarge ? CFG.sizeLarge : 1;
+      return Math.max(8, Math.round(baseCell * mul));
+    });
+    const wmax = Math.max.apply(null, sizes);
     // 每一組都佔固定的欄高（slots 格）。字數不足時，把文字隨機分配到其中幾格，
     // 沒被佔到的格子就成為離地的空間或中間的空隙。
     // 另一種型態：整組「橫躺」成一排貼在地上，只有一格高但很寬。
-    const lie = g.length > 1 && rnd()*100 < CFG.lieChance;
+    const lie = g.length > 1 && (g.length > slots || rnd()*100 < CFG.lieChance);   // 疊不下就一定橫躺
     if(lie){
-      const cells = g.map((ch,k)=>({dx:k*cell, top:cell, ch:ch}));
-      const o = {x:x, w:g.length*cell, chars:g, cells:cells, float:0, topOff:cell,
+      // 橫躺：一個接一個貼地排開，每個字寬度不同，上緣自然高低不齊
+      const cells = []; let dx = 0;
+      for(let k=0;k<g.length;k++){
+        cells.push({dx:dx, top:sizes[k], ch:g[k], size:sizes[k]});
+        dx += sizes[k];
+      }
+      const o = {x:x, w:dx, cell:wmax, chars:g, cells:cells, float:0,
+                 topOff:Math.max.apply(null,sizes),
                  duckable:false, lie:true, n:g.length, i:i, seed:(i*9301+49297)>>>0, passed:false};
       out.push(o);
       sp = Math.min(CFG.maxSpeed, sp + CFG.speedStep);
@@ -453,13 +563,19 @@ function buildObstacles(baseW, groups, seed){
       }
       idx.sort((a,b)=>a-b);
     }
-    // 直立：同一個 x、往上疊；文字由上往下讀
-    const cells = idx.map((s,k)=>({dx:0, top:(s+1)*cell, ch:g[g.length-1-k]}));
-    const flt = idx[0]*cell;                       // 最底下那格離地多高
+    // 直立：由下往上疊，每個字用自己的尺寸並水平置中；文字由上往下讀
+    const cells = []; let acc = idx[0]*baseCell;   // 最底下那格離地多高
+    for(let k=0;k<idx.length;k++){
+      if(k>0) acc += (idx[k]-idx[k-1]-1)*baseCell; // 中間空掉的格子
+      const sz = sizes[g.length-1-k];
+      acc += sz;
+      cells.push({dx:(wmax-sz)/2, top:acc, ch:g[g.length-1-k], size:sz});
+    }
+    const flt = cells[0].top - cells[0].size;      // 最底下那格的下緣離地多高
     // 這一組的高度＝最高那個方塊的上緣，跟它由幾個字組成無關
-    const topOff = (idx[idx.length-1]+1)*cell;
+    const topOff = cells[cells.length-1].top;
     const duckable = flt >= DUCK_H;                // 底下鑽得過去（但間距仍以最高處計算）
-    const o = {x:x, w:cell, chars:g, cells:cells, float:flt, topOff:topOff, duckable:duckable,
+    const o = {x:x, w:wmax, cell:wmax, chars:g, cells:cells, float:flt, topOff:topOff, duckable:duckable,
                lie:false, n:g.length, i:i, seed:(i*9301+49297)>>>0, passed:false};
     out.push(o);
     sp = Math.min(CFG.maxSpeed, sp + CFG.speedStep);
@@ -497,9 +613,10 @@ function timingStats(obs){
 
 /* 自動試跑：用一個「盡量早跳」的理想機器人跑一次關卡，確認參數是否可通關 */
 function autoTest(seed){
-  const cell = Math.round(CFG.cell), gy = 268, PW = 34, PH = 42, PX = 96;
+  const cell = Math.round(CFG.cell), PW = player.w, PH = player.h, PX = player.x;
+  const gy = 400 - Math.round(CFG.groundOff);   // 標稱值，位置都是相對地面算的
   const groups = (seed==null) ? level.groups : groupsFor(seed);
-  const obs = buildObstacles(880, groups, seed==null ? curSeed() : seed);
+  const obs = buildObstacles(Math.round(CFG.viewW), groups, seed==null ? curSeed() : seed);
   if(!obs.length) return {ok:true};
   // 機器人會按照每一組實際的高度控制跳躍力道（該點放就點放），不是每次都跳滿
   const P={h:0,v:0,onGround:true};
@@ -537,9 +654,10 @@ function autoTest(seed){
       o.x -= dx;
       if(PX + PW - CFG.forgive > o.x + 3 && PX + CFG.forgive < o.x + o.w - 3){
         for(const b of o.cells){
-          const bl = o.x + b.dx, br = bl + cell;
+          const oc = b.size || o.cell || cell;
+          const bl = o.x + b.dx, br = bl + oc;
           if(PX + PW - CFG.forgive <= bl + 3 || PX + CFG.forgive >= br - 3) continue;
-          const bt = gy - b.top, bb = bt + cell;
+          const bt = gy - b.top, bb = bt + oc;
           if(py + PH - 4 > bt + 3 && py + 4 < bb - 3)
             return {ok:false, why:"空間太窄：跳躍的落點會撞上第 "+(o.i+1)+" 組（把「間距係數」調高，或降低速度）"};
         }
@@ -624,7 +742,7 @@ function gapFor(speed, need, width){
 }
 
 function startLevel(){
-  resize();
+  resize(true);          // 開場強制重算一次（剛切到遊戲畫面時尺寸才量得到）
   if(CFG.randomSeed){                    // 每次重開都骰一次新的排列
     game.runSeed = 1 + Math.floor(Math.random()*99999);
     prepareLevel();
@@ -686,10 +804,12 @@ function spillChars(){
   for(const o of game.obstacles){
     if(o.x > W + 60 || o.x + o.w < -60) continue;
     for(const b of o.cells){
+      const oc = b.size || o.cell || cell;
       game.falling.push({
         ch: b.ch,
-        x: o.x + b.dx + cell/2,
-        y: groundY - b.top + cell/2,
+        size: oc,
+        x: o.x + b.dx + oc/2,
+        y: groundY - b.top + oc/2,
         vx: (Math.random()-0.5)*220,
         vy: -80 - Math.random()*220,
         rot: 0,
@@ -756,9 +876,10 @@ function frame(now){
     o.x -= dx;
     if(px + player.w - pad > o.x + 3 && px + pad < o.x + o.w - 3){
       for(const b of o.cells){
-        const bl = o.x + b.dx, br = bl + cellNow;
+        const oc = b.size || o.cell || cellNow;
+        const bl = o.x + b.dx, br = bl + oc;
         if(px + player.w - pad <= bl + 3 || px + pad >= br - 3) continue;
-        const bt = groundY - b.top, bb = bt + cellNow;
+        const bt = groundY - b.top, bb = bt + oc;
         if(py + player.h - 4 > bt + 3 && py + 4 < bb - 3){
           hit();
           if(game.dying){ draw(); game.raf = requestAnimationFrame(loop); return; }
@@ -839,30 +960,25 @@ function drawScene(){
     ctx.fillRect(px(x + r2()*12), yy, w, 2);
   }
 
-  // 障礙物：灰色外框、透明底、灰色文字
-  const B = 2;                                 // 框線粗細
+  // 障礙物：沒有外框，只有灰色文字
   for(const o of game.obstacles){
     if(o.x > W+60 || o.x + o.w < -60) continue;
+    if(game.dying) continue;               // 死掉時字會掉出去，這裡就不畫了
+    ctx.fillStyle = "#535353";
+    ctx.textAlign="center"; ctx.textBaseline="middle";
     for(const b of o.cells){
+      const oc = b.size || o.cell || cell;
+      ctx.font = "700 " + Math.round(oc*0.92) + 'px ui-monospace,Menlo,Consolas,"PingFang TC","Microsoft JhengHei",monospace';
       const cx = px(o.x + b.dx), cy = px(groundY - b.top);
-      ctx.fillStyle = "#535353";
-      ctx.fillRect(cx, cy, cell, B);                 // 上
-      ctx.fillRect(cx, cy+cell-B, cell, B);          // 下
-      ctx.fillRect(cx, cy, B, cell);                 // 左
-      ctx.fillRect(cx+cell-B, cy, B, cell);          // 右
-      if(!game.dying){                       // 死掉時框留著、字掉出去
-        ctx.font = "700 " + (cell-12) + 'px ui-monospace,Menlo,Consolas,"PingFang TC","Microsoft JhengHei",monospace';
-        ctx.textAlign="center"; ctx.textBaseline="middle";
-        ctx.fillText(b.ch, cx+cell/2, cy+cell/2+1);
-      }
+      ctx.fillText(b.ch, cx+oc/2, cy+oc/2+1);
     }
   }
 
   // 掉落中的文字碎片
   if(game.falling.length){
     ctx.textAlign="center"; ctx.textBaseline="middle";
-    ctx.font = "700 " + (cell-12) + 'px ui-monospace,Menlo,Consolas,"PingFang TC","Microsoft JhengHei",monospace';
     for(const p of game.falling){
+      ctx.font = "700 " + Math.round((p.size||cell)*0.92) + 'px ui-monospace,Menlo,Consolas,"PingFang TC","Microsoft JhengHei",monospace';
       const a = 1 - p.life/0.55;
       if(a <= 0 || p.y > H + 40) continue;
       ctx.save();
@@ -923,35 +1039,93 @@ function drawReloadIcon(x, y){
 /* 像素恐龍：17×21 的格點圖，'#' 深灰、'o' 眼睛、'.' 透空。
    身體 18 列固定，最後 3 列換腳做出跑步動畫。 */
 const DINO_BODY = [
-  ".........######..",
-  "........########.",
-  "........#########",
-  "........###o#####",
-  "........#########",
-  "........#########",
-  "........########.",
-  "........#####....",
-  "#.......#####....",
-  "##.....######....",
-  "###...#######....",
-  "#############....",
-  ".#############...",
-  "..############...",
-  "...##########....",
-  "...#########.....",
-  "...########......"
+  "....................#########.....",
+  "...................###########....",
+  "..................#############...",
+  "..................#############...",
+  "..................#############...",
+  "..................########o#######",
+  "..................########o#######",
+  "..................################",
+  "..................################",
+  "..................################",
+  "..................################",
+  ".................#################",
+  "................#############.....",
+  "...............##############.....",
+  "..............###############.....",
+  "#.............###############.....",
+  "##............########............",
+  "####..........########............",
+  "#####.........########............",
+  "#######......#########............",
+  ".#####################............",
+  "..#####################...........",
+  "...####################...........",
+  "....####################..........",
+  ".....###################..........",
+  "........#################.........",
+  ".......####################.......",
+  ".......####################.......",
+  ".......###################........",
+  "........################.#........",
+  ".........##############...........",
+  ".........##############...........",
+  ".........#####...#####............"
 ];
-/* 會動的是最下面四列：抬腿、伸腿、腳掌位置都會換，動作才看得出來 */
+/* 會動的是最下面幾列：抬腿、伸腿、腳掌位置都會換 */
 const DINO_LEGS = [
-  ["...##..###.......", "...##...##.......", "...##............", "..####..........."],  // 後腳著地
-  ["...###..##.......", "..##....##.......", "........##.......", ".......####......"],  // 前腳著地
-  ["...##..##........", "...##..##........", "...##..##........", "..###..###......."]   // 騰空：雙腳併攏
+  [
+    ".........#####...########.........",
+    ".........#####...########.........",
+    ".........#####...########.........",
+    ".........#####...########.........",
+    ".........#####....................",
+    ".......#########..................",
+    ".......#########..................",
+    ".......#########..................",
+    ".......#########.................."
+  ],   // 後腳著地
+  [
+    "......########...#####............",
+    "......########...#####............",
+    "......########...#####............",
+    "......########...#####............",
+    ".................#####............",
+    "...............#########..........",
+    "...............#########..........",
+    "...............#########..........",
+    "...............#########.........."
+  ],   // 前腳著地
+  [
+    ".........#####...#####............",
+    ".........#####...#####............",
+    ".........#####...#####............",
+    ".........#####...#####............",
+    ".......#################..........",
+    ".......#################..........",
+    ".......#################..........",
+    ".......#################..........",
+    ".................................."
+  ],   // 騰空：雙腳併攏
 ];
 const DINO_ROWS = DINO_BODY.length + DINO_LEGS[0].length, DINO_COLS = DINO_BODY[0].length;
 
 function drawRunner(){
   if(player.inv > 0 && Math.floor(game.t*14)%2===0) return;
-  const u = Math.max(1, Math.round(player.h / DINO_ROWS));     // 42 / 21 = 2 px 一格
+  if(runnerReady){                       // 換成自訂的角色圖
+    try{
+      const im = runnerFrame();
+      const iw = im.naturalWidth || im.width || 1;
+      const ih = im.naturalHeight || im.height || 1;
+      const k = Math.min(player.w/iw, player.h/ih) * Math.max(0.2, CFG.runnerScale);
+      const dw = Math.max(1, iw*k), dh = Math.max(1, ih*k);
+      ctx.drawImage(im, px(player.x + (player.w-dw)/2),
+                        px(groundY + player.y - dh), dw, dh);   // 以腳底對齊地面
+      return;
+    }catch(e){ runnerReady = false; }
+  }
+  const u = Math.max(1, Math.round(player.h / DINO_ROWS));     // 42 列 → 1 單位一格
   const x0 = px(player.x), y0 = px(groundY + player.y) - DINO_ROWS*u;
   // 跑越快、腳換越快（任何一個數值出問題都退回站姿，絕不讓恐龍缺腿）
   const spd = isFinite(game.speed) ? game.speed : 300;
@@ -986,6 +1160,54 @@ function showDeathRow(on){
   deathRowOn = on;
   const row = $("death-row");
   if(row) row.style.display = on ? "flex" : "none";
+}
+
+/* ================= 自訂的主角圖 ================= */
+let RUNNER = [], runnerReady = false;
+function loadRunner(){
+  runnerReady = false;
+  RUNNER = [];
+  const list = Array.isArray(CFG.runnerImgs) ? CFG.runnerImgs : [];
+  if(!list.length) return;
+  let loaded = 0;
+  list.forEach((src, i)=>{
+    const im = new Image();
+    im.onload = ()=>{ loaded++; if(loaded === list.length) runnerReady = true; };
+    im.onerror = ()=>{ RUNNER = []; runnerReady = false; };
+    im.src = src;
+    RUNNER[i] = im;
+  });
+}
+/* 這一幀該用第幾張圖：
+   1 張＝靜止；2 張＝跑步時交替；3 張以上＝最後一張當騰空姿勢，其餘輪流跑 */
+function runnerFrame(){
+  const n = RUNNER.length;
+  if(n <= 1) return RUNNER[0];
+  if(!player.onGround) return n >= 3 ? RUNNER[n-1] : RUNNER[0];
+  const cycle = n >= 3 ? n-1 : n;
+  const spd = isFinite(game.speed) ? game.speed : 300;
+  const t = isFinite(game.t) ? game.t : 0;
+  const i = Math.floor(t * (8 + spd/60)) % cycle;
+  return RUNNER[Math.abs(i)] || RUNNER[0];
+}
+/* 存進設定前先縮到 128px 以內，否則塞不進瀏覽器的儲存空間、匯出的檔案也會過肥 */
+function shrinkImage(file, cb){
+  const fr = new FileReader();
+  fr.onload = ()=>{
+    const im = new Image();
+    im.onload = ()=>{
+      const M = 128;
+      const k = Math.min(1, M/Math.max(im.width||1, im.height||1));
+      const w = Math.max(1, Math.round((im.width||1)*k)), h = Math.max(1, Math.round((im.height||1)*k));
+      const c = document.createElement("canvas"); c.width = w; c.height = h;
+      c.getContext("2d").drawImage(im, 0, 0, w, h);
+      try{ cb(c.toDataURL("image/png")); }catch(e){ cb(fr.result); }
+    };
+    im.onerror = ()=>cb(null);
+    im.src = fr.result;
+  };
+  fr.onerror = ()=>cb(null);
+  fr.readAsDataURL(file);
 }
 
 /* ================= 已收集文字 ================= */
@@ -1093,10 +1315,14 @@ cv.addEventListener("touchstart", e=>{ e.preventDefault(); if(pointerHeld) retur
 cv.addEventListener("touchend", e=>{ e.preventDefault(); pointerHeld = false; releaseJump(); },{passive:false});
 cv.addEventListener("touchcancel", ()=>{ pointerHeld = false; releaseJump(); });
 
+/* 版本標記：一打開就知道拿到的是不是最新的檔案（快取沒清的話會停在舊日期） */
+const BUILD = "v3 · 2026-09-22c";
 function applyTexts(){
   document.title = CFG.title || "文字闖關";
   $("title-big").textContent = CFG.title || "文字闖關";
   $("title-sub").textContent = CFG.subtitle || "";
+  const tag = $("build-tag");
+  if(tag) tag.textContent = BUILD;
 }
 
 /* ================= 面板（玩家版沒有這一段的 UI） ================= */
@@ -1198,6 +1424,7 @@ if(panel && !BAKED){
       document.querySelectorAll("[data-cfg]").forEach(el=>{ el.value = CFG[el.getAttribute("data-cfg")] || ""; });
     }
     // 即時數據
+    const VIEW = computeView();
     const h = jumpHeight(), t = airTime(), cell = Math.round(CFG.cell);
     const canStack = Math.floor((h - 6) / cell);
     const topSpeed = Math.min(CFG.maxSpeed, CFG.startSpeed + Math.max(0, level.groups.length-1)*CFG.speedStep);
@@ -1205,13 +1432,17 @@ if(panel && !BAKED){
     $("readout").innerHTML =
       `跳躍高度 <b>${h.toFixed(0)} px</b>（最高可越過 <b>${canStack}</b> 層文字）<br>`+
       `滯空時間 <b>${t.toFixed(2)} 秒</b>・最高速時一次跳 <b>${jumpDist.toFixed(0)} px</b><br>`+
-      `關卡 <b>${level.groups.length}</b> 組 / <b>${level.chars.length}</b> 字・最高速 <b>${topSpeed.toFixed(0)} px/秒</b>`;
+      `關卡 <b>${level.groups.length}</b> 組 / <b>${level.chars.length}</b> 字・最高速 <b>${topSpeed.toFixed(0)} px/秒</b><br>`+
+      `障礙物從進畫面到抵達 <b>${((CFG.viewW - player.x)/Math.max(1,CFG.startSpeed)).toFixed(2)}</b> 秒`+
+      `（最高速時 <b>${((CFG.viewW - player.x)/Math.max(1,topSpeed)).toFixed(2)}</b> 秒）<br>`+
+      `目前畫面 <b>${VIEW.w} × ${VIEW.h}</b> 單位（<b>${(VIEW.w/Math.max(1,VIEW.h)).toFixed(2)} : 1</b>，`+
+      `上下置中）・放大 <b>${VIEW.scale.toFixed(2)}×</b>`;
     // 這一關實際的高度分佈
-    const obs = buildObstacles(880);
+    const obs = buildObstacles(Math.round(CFG.viewW));
     const slots = Math.max(1, Math.round(CFG.maxStack));
     let topHit = 0, lifted = 0, sumTop = 0;
     obs.forEach(o=>{
-      if(o.topOff >= slots*cell) topHit++;
+      if(o.topOff >= slots*(o.cell||cell)) topHit++;
       if(o.float > 0) lifted++;
       sumTop += o.topOff;
     });
@@ -1265,6 +1496,12 @@ if(panel && !BAKED){
     }else{
       warns.push("自動試跑失敗 — " + test.why + "。");
     }
+    // 跳到最高時恐龍會不會衝出畫面上緣
+    // 視窗太矮的話畫面會改成左右留白，提醒一下
+    if(VIEW.tight){
+      warns.push(`視窗高度不夠，橫帶已縮小以塞進畫面，左右因此留白。`+
+                 `把「橫帶高度」調低（目前 ${VIEW.h}、最低可到 ${VIEW.minH}）或把視窗拉高就能恢復滿版。`);
+    }
     if(CFG.invincible) warns.push("目前是無敵模式，記得關掉再匯出。");
     if(initErr) warns.push(initErr);
     $("warn").className = warns.length ? "on" : "";
@@ -1309,9 +1546,51 @@ if(panel && !BAKED){
     if(!s) return;
     try{ CFG = sanitize(Object.assign({}, DEFAULTS, JSON.parse(s))); }
     catch(e){ alert("看起來不是有效的 JSON。"); return; }
-    prepareLevel(); applyTexts(); refresh(); save();
+    prepareLevel(); applyTexts(); loadRunner(); refresh(); save();
     if($("scr-game").classList.contains("on")) startLevel();
   };
+  /* 主角圖 */
+  function refreshRunnerPreview(){
+    const box = $("runner-preview");
+    if(!box) return;
+    box.innerHTML = "";
+    (CFG.runnerImgs||[]).forEach((src,i)=>{
+      const wrap = document.createElement("div");
+      wrap.style.cssText = "text-align:center;font-size:10px;color:var(--ink-soft)";
+      const img = document.createElement("img");
+      img.src = src;
+      img.style.cssText = "width:46px;height:46px;object-fit:contain;border:2px solid var(--line);background:#fff;display:block";
+      const cap = document.createElement("div");
+      const n = CFG.runnerImgs.length;
+      cap.textContent = (n>=3 && i===n-1) ? "跳躍" : ("跑 "+(i+1));
+      wrap.appendChild(img); wrap.appendChild(cap);
+      box.appendChild(wrap);
+    });
+  }
+  $("runner-file").addEventListener("change", function(){
+    const files = Array.prototype.slice.call(this.files||[], 0, 4);
+    this.value = "";
+    if(!files.length) return;
+    const out = new Array(files.length);
+    let done = 0, bad = false;
+    files.forEach((f,i)=>{
+      shrinkImage(f, (data)=>{
+        if(!data) bad = true; else out[i] = data;
+        if(++done === files.length){
+          const list = out.filter(Boolean);
+          if(!list.length){ alert("這些圖都讀不起來，換別的試試。"); return; }
+          if(bad) alert("有幾張讀不起來，已略過。");
+          CFG.runnerImgs = list;
+          loadRunner(); refreshRunnerPreview(); save();
+        }
+      });
+    });
+  });
+  $("btn-runner-clear").onclick = ()=>{
+    CFG.runnerImgs = []; loadRunner(); refreshRunnerPreview(); save();
+  };
+  refreshRunnerPreview();
+
   $("btn-test-sfx").onclick = ()=>{
     sJump();
     [0,1,2,3].forEach(i=> setTimeout(()=>sPass(i), 260 + i*150));
@@ -1328,7 +1607,7 @@ if(panel && !BAKED){
   $("btn-reset").onclick = ()=>{
     if(!confirm("所有參數回到預設值？")) return;
     CFG = sanitize(Object.assign({}, DEFAULTS));
-    prepareLevel(); applyTexts(); refresh(); save();
+    prepareLevel(); applyTexts(); loadRunner(); refresh(); save();
     if($("scr-game").classList.contains("on")) startLevel();
   };
   }catch(e){ initError(e); }
@@ -1340,11 +1619,11 @@ if(panel && !BAKED){
 
   onLevelRebuilt = ()=>refresh(false);
   try{
-    prepareLevel(); applyTexts(); refresh();
+    prepareLevel(); applyTexts(); loadRunner(); refresh();
   }catch(e){ initError(e); }
 }else{
   /* 玩家版：只有遊戲 */
-  prepareLevel(); applyTexts();
+  prepareLevel(); applyTexts(); loadRunner();
 }
 
 resize();
